@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Integrador | Submódulo 2 | Diseño Dinámico</title>
+    
+    <style>
+        /* Importamos Montserrat y Open Sans, añadiendo pesos para variación */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Open+Sans:wght@400;600;700&display=swap');
+
+        /* Definimos variables de color dinámicas basadas en tu petición */
+        :root {
+            --color-primario: #0A192F; /* Navy Oscuro: Confianza y Profesionalismo */
+            --color-fondo: #F0F4F8;    /* Gris muy claro con tono azul: Limpieza y Calma */
+            --color-texto: #1A202C;    /* Gris muy oscuro para lectura cómoda */
+            --color-blanco: #FFFFFF;
+            
+            /* Paleta de Materiales Solicitada */
+            --color-admin: #F97316;     /* Naranja (Administración) */
+            --color-admin-grad: linear-gradient(135deg, #F97316 0%, #FBBF24 100%);
+            
+            --color-historia: #8B4513;  /* Café (Conciencia Histórica) */
+            --color-historia-grad: linear-gradient(135deg, #8B4513 0%, #D2691E 100%);
+            
+            --color-psico: #8B5CF6;     /* Morado (Psicología) */
+            --color-psico-grad: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);
+            
+            --color-org: #10B981;       /* Verde (Organismos) */
+            --color-org-grad: linear-gradient(135deg, #10B981 0%, #34D399 100%);
+            
+            --color-com: #EC4899;       /* Rosa (Comunicación) */
+            --color-com-grad: linear-gradient(135deg, #EC4899 0%, #F472B6 100%);
+
+            --color-taller: #EF4444;    /* Rojo (Taller de Pensamiento) */
+            --color-taller-grad: linear-gradient(135deg, #EF4444 0%, #F87171 100%);
+
+            --fuente-titulos: 'Montserrat', sans-serif;
+            --fuente-texto: 'Open Sans', sans-serif;
+            
+            /* Sombra suave global */
+            --sombra-card: 0 10px 25px rgba(0,0,0,0.08);
+            --transition-dynamic: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--fuente-texto);
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ----- NAVEGACIÓN ----- */
+        header {
+            background-color: var(--color-primario);
+            padding: 1.2rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border-bottom: 2px solid var(--color-admin); /* Subrayado inicial */
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--color-blanco);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: var(--transition-dynamic);
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--color-blanco);
+            visibility: hidden;
+            transform: scaleX(0);
+            transition: var(--transition-dynamic);
+        }
+
+        /* Efectos hover personalizados por materia en el menú */
+        nav a.nav-admin:hover { color: var(--color-admin); }
+        nav a.nav-admin:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-admin); }
+        
+        nav a.nav-historia:hover { color: var(--color-historia); }
+        nav a.nav-historia:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-historia); }
+        
+        nav a.nav-psico:hover { color: var(--color-psico); }
+        nav a.nav-psico:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-psico); }
+
+        nav a.nav-org:hover { color: var(--color-org); }
+        nav a.nav-org:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-org); }
+
+        nav a.nav-com:hover { color: var(--color-com); }
+        nav a.nav-com:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-com); }
+
+        nav a.nav-taller:hover { color: var(--color-taller); }
+        nav a.nav-taller:hover::after { visibility: visible; transform: scaleX(1); background-color: var(--color-taller); }
+
+        nav a.nav-editores:hover { color: #cbd5e1; }
+        nav a.nav-editores:hover::after { visibility: visible; transform: scaleX(1); background-color: #cbd5e1; }
+
+
+        /* ----- CONTENEDOR PRINCIPAL ----- */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 20px;
+        }
+
+        .seccion-pagina {
+            padding-top: 4rem;
+            margin-bottom: 6rem;
+            scroll-margin-top: 100px;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4rem;
+        }
+
+        .seccion-pagina:last-of-type { border-bottom: none; }
+
+        h1, h2, h3 {
+            font-family: var(--fuente-titulos);
+            color: var(--color-primario);
+            margin-bottom: 1rem;
+        }
+
+        .titulo-seccion-principal {
+            text-align: center;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--color-blanco);
+            background-color: var(--color-primario);
+            margin-bottom: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* ----- ESTRUCTURA DE LAS MATERIAS ----- */
+        .hero-materia {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: var(--color-blanco);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-card);
+            margin-bottom: 3rem;
+            align-items: center;
+            border-left: 10px solid var(--color-primario);
+            transition: var(--transition-dynamic);
+        }
+
+        .hero-materia:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        }
+
+        .hero-materia h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .hero-materia p { font-size: 1.1rem; color: var(--color-texto); }
+
+        .imagen-materia img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 12px;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: var(--transition-dynamic);
+        }
+
+        .imagen-materia img:hover { transform: scale(1.1) rotate(2deg); }
+
+        .contenido-parcial { display: flex; gap: 2.5rem; margin-bottom: 3rem; }
+
+        .progresiones, .temario {
+            flex: 1;
+            background: var(--color-blanco);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--sombra-card);
+            transition: var(--transition-dynamic);
+            border: 2px solid transparent;
+        }
+
+        .progresiones:hover, .temario:hover { transform: scale(1.03); border-color: rgba(0,0,0,0.05); }
+
+        .progresiones h3, .temario h3 {
+            color: var(--color-blanco);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        ul { margin-left: 1.8rem; }
+        li { margin-bottom: 1rem; color: var(--color-texto); font-weight: 500; }
+        li::marker { content: '✓ '; font-size: 1.2rem; font-weight: 700; }
+
+        .perfil-docente {
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            background: var(--color-primario);
+            color: var(--color-blanco);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .perfil-docente h3 { color: var(--color-blanco); font-size: 1.6rem; }
+
+        .foto-perfil {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--color-blanco);
+            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+            transition: var(--transition-dynamic);
+        }
+
+        .perfil-docente:hover .foto-perfil { transform: scale(1.1); }
+
+        /* ----- SECCIÓN EDITORES (TARJETAS INTERACTIVAS 3D) ----- */
+        .contenedor-editores {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-top: 4rem;
+        }
+
+        .tarjeta-editor {
+            background-color: transparent;
+            height: 380px;
+            perspective: 1000px;
+        }
+
+        .tarjeta-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            border-radius: 20px;
+            box-shadow: var(--sombra-card);
+        }
+
+        /* Al hacer hover, la tarjeta gira */
+        .tarjeta-editor:hover .tarjeta-inner {
+            transform: rotateY(180deg);
+        }
+
+        .tarjeta-front, .tarjeta-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden; /* Safari */
+            backface-visibility: hidden;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .tarjeta-front {
+            background-color: var(--color-blanco);
+            border-bottom: 6px solid var(--color-primario);
+        }
+
+        .tarjeta-front img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--color-fondo);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .tarjeta-front h3 {
+            color: var(--color-primario);
+            font-size: 1.5rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .tarjeta-front p {
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        .tarjeta-back {
+            background: linear-gradient(135deg, var(--color-primario) 0%, #1e293b 100%);
+            color: var(--color-blanco);
+            transform: rotateY(180deg);
+            border-top: 6px solid var(--color-admin);
+        }
+
+        .tarjeta-back h3 {
+            color: var(--color-admin);
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+        }
+
+        .tarjeta-back p {
+            color: #cbd5e1;
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .redes-editor {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .redes-editor a {
+            background: rgba(255,255,255,0.1);
+            color: var(--color-blanco);
+            text-decoration: none;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            font-weight: bold;
+            transition: var(--transition-dynamic);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .redes-editor a:hover {
+            background: var(--color-admin);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.4);
+            border-color: var(--color-admin);
+        }
+
+        /* ----- BOTÓN VOLVER ARRIBA ----- */
+        #btnVolver {
+            display: none;
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 99;
+            font-size: 28px;
+            border: none;
+            outline: none;
+            background: var(--color-primario);
+            color: white;
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+            transition: var(--transition-dynamic);
+        }
+
+        #btnVolver:hover { transform: translateY(-5px) scale(1.1); }
+
+        /* ----- FOOTER ----- */
+        footer {
+            background-color: var(--color-primario);
+            color: var(--color-blanco);
+            text-align: center;
+            padding: 2.5rem 0;
+            margin-top: 4rem;
+        }
+
+        /* ----- RESPONSIVIDAD ----- */
+        @media (max-width: 992px) {
+            .hero-materia, .contenido-parcial {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                text-align: center;
+                gap: 2rem;
+            }
+            .titulo-seccion-principal { font-size: 2rem; }
+            .perfil-docente { flex-direction: column; text-align: center; }
+            .contenedor-editores {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#materia1" class="nav-admin">Administración</a></li>
+                <li><a href="#materia2" class="nav-historia">Conciencia Histórica</a></li>
+                <li><a href="#materia3" class="nav-psico">Psicología</a></li>
+                <li><a href="#materia4" class="nav-org">Organismos</a></li>
+                <li><a href="#materia5" class="nav-com">Comunicación</a></li>
+                <li><a href="#materia6" class="nav-taller">Taller de Pensamiento</a></li>
+                <li><a href="#editores" class="nav-editores" style="color: #cbd5e1;">Editores</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="materia1" class="seccion-pagina" style="border-bottom-color: var(--color-admin);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-admin-grad);">Fundamentos de Administración</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-admin);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Aportar instrumentos valiosos para tener un amplio conocimiento y perspectivas para incidir en nuestra vida diaria y sociedad; así como tener el conocimiento básico de la administración.</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="fu.jpeg" alt="Portada Administración" style="border: 5px solid rgba(249, 115, 22, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(249, 115, 22, 0.1);">
+                    <h3 style="background: var(--color-admin-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <ul>Progresión 1: Perspectivas administrativas.</ul>
+                        <ul>Progresión 2: El control y la racionalidad economica.</li>
+                        <ul>Progresión 3: La responsabilidad social.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(249, 115, 22, 0.1);">
+                    <h3 style="background: var(--color-admin-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>Etapas del proceso administrativo en las organizaciones .</li>
+                        <li>Metodos, herramientas, tecnicas y procedimientos de contrl en racionalidad economica.</li>
+                        <li>Responsabilidad social y principios de la administracion.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-admin-grad);">
+                <img src="l.jpeg" alt="Foto Docente 1" class="foto-perfil">
+                <div class="info-docente">
+                    <h3>Docente: Lic. Lucia Sanchez Garcia</h3>
+                    <p>Especialista en administracion publica.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="materia2" class="seccion-pagina" style="border-bottom-color: var(--color-historia);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-historia-grad);">Conciencia Histórica</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-historia);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Fomentar la comprensión crítica del pasado para entender el presente y construir una identidad social e histórica. .</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="co.jpeg" alt="Portada Historia" style="border: 5px solid rgba(139, 69, 19, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(139, 69, 19, 0.1);">
+                    <h3 style="background: var(--color-historia-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <li>Progresión 1: .</li>
+                        <li>Progresión 2: Analiza los procesos sociopolíticos.</li>
+                        <li>Progresión 3: Comprende el impacto de la globalización.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(139, 69, 19, 0.1);">
+                    <h3 style="background: var(--color-historia-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>Metodología de la investigación histórica.</li>
+                        <li>Movimientos sociales del siglo XX.</li>
+                        <li>Identidad y patrimonio cultural.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-historia-grad);">
+                <img src="j.jpeg" alt="Foto Docente 2" class="foto-perfil">
+                <div class="info-docente">
+                    <h3>Lic. Jovani Martinez</h3>
+                    <p>Historiador e investigador especializado en movimientos contemporáneos.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="materia3" class="seccion-pagina" style="border-bottom-color: var(--color-psico);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-psico-grad);">Psicología</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-psico);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Estudiar los procesos mentales, sensaciones, percepciones y el comportamiento humano frente a su entorno físico y social.</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="ps.jpeg" alt="Portada Psicología" style="border: 5px solid rgba(139, 92, 246, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(139, 92, 246, 0.1);">
+                    <h3 style="background: var(--color-psico-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <li>Progresión 1: Define las corrientes psicológicas.</li>
+                        <li>Progresión 2: Analiza el desarrollo cognitivo.</li>
+                        <li>Progresión 3: Identifica factores de inteligencia emocional.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(139, 92, 246, 0.1);">
+                    <h3 style="background: var(--color-psico-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>Fundamentos biológicos de la conducta.</li>
+                        <li>Teorías del aprendizaje y la memoria.</li>
+                        <li>Personalidad y motivación.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-psico-grad);">
+                <img src="p.jpeg" alt="Foto Docente 3" class="foto-perfil">
+                <div class="info-docente">
+                    <h3> Lic. Bertha Piña</h3>
+                    <p>Psicóloga clínica con especialidad en desarrollo adolescente.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="materia4" class="seccion-pagina" style="border-bottom-color: var(--color-org);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-org-grad);">Organismos: Estructuras y Procesos</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-org);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Comprender la anatomía, el funcionamiento celular y la interacción de los seres vivos con su ecosistema.</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="or.jpeg" alt="Portada Organismos" style="border: 5px solid rgba(16, 185, 129, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(16, 185, 129, 0.1);">
+                    <h3 style="background: var(--color-org-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <li>Progresión 1: Reconoce los niveles de organización.</li>
+                        <li>Progresión 2: Analiza el metabolismo celular.</li>
+                        <li>Progresión 3: Comprende la genética y herencia.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(16, 185, 129, 0.1);">
+                    <h3 style="background: var(--color-org-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>La célula: estructura y función.</li>
+                        <li>Sistemas del cuerpo humano.</li>
+                        <li>Biodiversidad y evolución.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-org-grad);">
+                <img src="n.jpeg" alt="Foto Docente 4" class="foto-perfil">
+                <div class="info-docente">
+                    <h3> Biól. Norberto Solorzano</h3>
+                    <p>Biólogo especializado en ecología de ecosistemas y genética de poblaciones.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="materia5" class="seccion-pagina" style="border-bottom-color: var(--color-com);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-com-grad);">Comunicación y Sociedad</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-com);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Desarrollar habilidades de expresión oral y escrita, así como entender el impacto de los medios masivos en la sociedad actual.</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="so.jpeg" alt="Portada Comunicación" style="border: 5px solid rgba(236, 72, 153, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(236, 72, 153, 0.1);">
+                    <h3 style="background: var(--color-com-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <li>Progresión 1: Identifica los elementos de la comunicación.</li>
+                        <li>Progresión 2: Analiza el discurso de los medios masivos.</li>
+                        <li>Progresión 3: Redacta textos argumentativos.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(236, 72, 153, 0.1);">
+                    <h3 style="background: var(--color-com-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>Tipos y barreras de la comunicación.</li>
+                        <li>Medios tradicionales vs digitales.</li>
+                        <li>Estructura del ensayo y la reseña.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-com-grad);">
+                <img src="cas.jpeg" alt="Foto Docente 5" class="foto-perfil">
+                <div class="info-docente">
+                    <h3> Lic. Angel Casso</h3>
+                    <p>Comunicólogo enfocado en medios digitales y periodismo narrativo.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="materia6" class="seccion-pagina" style="border-bottom-color: var(--color-taller);">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-taller-grad);">Taller de Pensamiento</h1>
+            <div class="hero-materia" style="border-left-color: var(--color-taller);">
+                <div class="info-materia">
+                    <h2>Propósito de la Materia</h2>
+                    <p>Fomentar el pensamiento crítico, la resolución de problemas lógicos y la creatividad mediante la estructuración de argumentos sólidos.</p>
+                </div>
+                <div class="imagen-materia">
+                    <img src="ta.jpeg" alt="Portada Taller de Pensamiento" style="border: 5px solid rgba(239, 68, 68, 0.3);">
+                </div>
+            </div>
+            <div class="contenido-parcial">
+                <div class="progresiones" style="border-color: rgba(239, 68, 68, 0.1);">
+                    <h3 style="background: var(--color-taller-grad);">Progresiones del Primer Parcial</h3>
+                    <ul>
+                        <li>Progresión 1: Identifica falacias lógicas comunes.</li>
+                        <li>Progresión 2: Construye silogismos y deducciones.</li>
+                        <li>Progresión 3: Aplica el pensamiento lateral.</li>
+                    </ul>
+                </div>
+                <div class="temario" style="border-color: rgba(239, 68, 68, 0.1);">
+                    <h3 style="background: var(--color-taller-grad);">Contenidos del Primer Parcial</h3>
+                    <ul>
+                        <li>Lógica formal e informal.</li>
+                        <li>Estructura de argumentos válidos.</li>
+                        <li>Técnicas de pensamiento creativo (Brainstorming).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="perfil-docente" style="background: var(--color-taller-grad);">
+                <img src="k.jpeg" alt="Foto Docente 6" class="foto-perfil">
+                <div class="info-docente">
+                    <h3>Lic. Clarissa Astello</h3>
+                    <p>Especialista en filosofía de la lógica y metodologías de pensamiento crítico.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="editores" class="seccion-pagina" style="border-bottom: none;">
+            <h1 class="titulo-seccion-principal" style="background: var(--color-primario);">Conoce al Equipo</h1>
+            <p style="text-align:center; font-size: 1.2rem; max-width: 800px; margin: 0 auto; color: var(--color-texto);">Desarrolladores y diseñadores que hicieron posible este sitio web aplicando los conocimientos del Submódulo 2. Pasa el cursor sobre las tarjetas para saber más.</p>
+            
+            <div class="contenedor-editores">
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="m.jpeg" alt="Editor 1">
+                            <h3>Jeremy Jimenez</h3>
+                            <p>Líder de Proyecto</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Encargado de coordinar el trabajo en equipo y asegurar que los tiempos de entrega se cumplan aplicando la administración aprendida.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="GitHub">GH</a>
+                                <a href="#" title="LinkedIn">IN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="rey.jpeg" alt="Editor 2">
+                            <h3>Reynaldo Hernandez</h3>
+                            <p>Diseñador UX/UI</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Responsable de la paleta de colores, la psicología del color y que la experiencia de usuario sea impecable e intuitiva.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="Behance">BE</a>
+                                <a href="#" title="Dribbble">DR</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="ovi.jpeg" alt="Editor 3">
+                            <h3>Carlos Gracia</h3>
+                            <p>Desarrollador Frontend</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Elaboré la estructura en HTML y CSS, haciendo que la página sea responsiva y añadiendo animaciones fluidas al código.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="GitHub">GH</a>
+                                <a href="#" title="CodePen">CP</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="victor.jpeg" alt="Editor 4">
+                            <h3>Victor Delgadillo</h3>
+                            <p>Creador de Contenido</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Redacté los propósitos de cada materia usando bases de comunicación efectiva para que la lectura sea fácil y clara.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="Medium">MD</a>
+                                <a href="#" title="Twitter">TW</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="rogelio.jpeg" alt="Editor 5">
+                            <h3>Rogelio Covarrubias</h3>
+                            <p>Investigador Histórico</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Encargado de recolectar la información sobre los temarios, asegurando que el contenido sea fiel y veraz a nuestro ciclo escolar.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="LinkedIn">IN</a>
+                                <a href="#" title="Mail">@</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarjeta-editor">
+                    <div class="tarjeta-inner">
+                        <div class="tarjeta-front">
+                            <img src="ana.jpeg" alt="Editor 6">
+                            <h3>Ana Hernandez</h3>
+                            <p>Especialista Lógico</p>
+                        </div>
+                        <div class="tarjeta-back">
+                            <h3>¡Hola!</h3>
+                            <p>Revisé la estructuración del código y el contenido, aplicando el pensamiento crítico para evitar errores de semántica o lógica.</p>
+                            <div class="redes-editor">
+                                <a href="#" title="GitHub">GH</a>
+                                <a href="#" title="LinkedIn">IN</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <button onclick="volverArriba()" id="btnVolver" title="Volver arriba">↑</button>
+
+    <footer>
+        <p style="background: linear-gradient(135deg, #FFF, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: inline-block;">Proyecto de Diseño Web Multidisciplinario</p>
+        <p>&copy; 2026 |Los Belicos del Voltaje | Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        let mybutton = document.getElementById("btnVolver");
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+        }
+        function volverArriba() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+
+</body>
+</html>
